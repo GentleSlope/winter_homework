@@ -1,0 +1,59 @@
+while (resultSet.next()){
+                resultSet.getInt("picId");
+                resultSet.getString("songListName");
+                resultSet.getString("songListPic");
+                resultSet.getString("songListPlayCount");
+                resultSet.getString("trans");
+                resultSet.getString("url");
+                resultSet.getInt("songListCount");
+            }
+
+
+
+                        ResultSetMetaData metaData = (ResultSetMetaData) resultSet.getMetaData();
+                        int cloumCount = metaData.getColumnCount();
+
+                        while (resultSet.next()){
+                            jsonObject = new JsonObject();
+                            for (int i=1;i<=cloumCount;i++) {
+                                String cloumName = metaData.getColumnLabel(i);
+                                String value = resultSet.getString(cloumName);
+                                jsonObject.addProperty(cloumName, value);
+                            }
+                            array.add(jsonObject);
+                        }
+
+
+
+                    3.
+
+                        String sql1 = "select loveLevel from mlgb.userlist where userlist.userName = ? &userlist.ListName = ?&userlist.id = ? ";
+                                        statement = connection.prepareStatement(sql1);
+                                        statement.setString(1, String.valueOf(records.getId()));
+                                        statement.setString(2, records.getListName());
+                                        statement.setString(3, user.getName());
+                                        ResultSet resultSet = statement.executeQuery();
+                                        while (resultSet.next()){
+                                            System.out.println( resultSet.getInt("loveLevel"));
+                                        }
+                                        while (resultSet.next()) {
+                                            int loveLevel = resultSet.getInt("loveLevel");
+                                            System.out.println(loveLevel);
+                                            if (loveLevel == 0){
+                                                String sql = "insert into mlgb.userlist(id,ListName,userName,loveLevel) values (?,?,?,?);";
+                                                statement = connection.prepareStatement(sql);
+                                                statement.setString(1, String.valueOf(records.getId()));
+                                                statement.setString(2, records.getListName());
+                                                statement.setString(3, user.getName());
+                                                statement.setInt(4, 1);
+                                                statement.executeUpdate();
+                                            } else {
+                                                String sql = "update mlgb.userlist set userlist.loveLevel = userlist.loveLevel+1 where userlist.userName = ? &userlist.ListName = ?&userlist.id = ? ";
+                                                statement = connection.prepareStatement(sql);
+                                                statement.setInt(1,loveLevel);
+                                                statement.setString(4, String.valueOf(records.getId()));
+                                                statement.setString(3, records.getListName());
+                                                statement.setString(2, user.getName());
+                                                statement.executeUpdate();
+                                        }
+                                        }
